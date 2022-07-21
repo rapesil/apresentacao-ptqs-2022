@@ -20,7 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Book Service")
+@DisplayName("Testes de unidade - Book Service")
 public class BookServiceTest {
 
     @InjectMocks
@@ -28,9 +28,6 @@ public class BookServiceTest {
 
     @Mock
     private BookRepository mockBookRepository;
-
-    @Mock
-    private KafkaService mockKafkaService;
 
     @Test
     @DisplayName("Deve retornar todos os livros")

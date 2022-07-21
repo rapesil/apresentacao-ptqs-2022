@@ -1,39 +1,64 @@
-# Testando integrações com S3
+# Melhorando a automação de testes de API Rest na prática
+
+Código usado na apresentação da palestra `Melhorando a automação de testes de API Rest na prática` na Conferência de testes de API Rest do Júlio de Lima
 
 ## Prerrequisitos
 
 * Java 11
 * Docker
-* Python 3.6+
-* PIP (python package manager)
-* Conta AWS (pode ser a conta free)* 
 
-> * Ter a conta da AWS é opcional. Você só precisará dela se quiser testar uma integração real.
->Caso não seja o seu caso, pode pular para [segunda parte desse poste](#segundaParte)
+## Como rodar esse teste na sua máquina
 
-## Preparando o ambiente para rodar com a conta real
+Você pode rodar local, subindo a aplicação na sua máquina o que te permite rodar alguns testes com o Postman, por exemplo.
+Antes é necessário subir o banco:
 
-Caso você tenha uma conta AWS, crie um bucket S3 e depois crie as seguintes variáveis de ambiente:
-
-```shell script
-export ACCESS_KEY="SUA_ACCESS_KEY_AQUI"
-export SECRET_KEY="SUA_SECRET_KEY_AQUI"
-export BUCKET_NAME="NOME_DO_SEU_BUCKET"
 ```
-
-Isso fará com que a aplicação identifique suas credenciais para conectar-se com sua conta AWS e também saiba qual o bucket que deverá utilizar.
-
-### Preparando a aplicação
-
-Para subir a aplicação na sua máquina local, primeiro é necessário subir o banco. Navegue no projeto até a pasta `java-api/book` e digite:
-
-````docker-compose up````
+docker-compose up
+```
 
 Assim que o banco subir na porta `3306`, basta rodar:
 
-```/gradlew bootRun```
+```
+./gradlew bootRun
+```
 
-A aplicação subirá na porta `8080`. Pronto, já podemos começar a fazer testes. Nesse primeiro momento vamos fazer um teste manual.
+A aplicação subirá na porta `8080`. Pronto, já podemos começar a fazer testes. Uma vez que a API estiver de pé, você consegue consultar o swagger em:
+
+```
+http://localhost:8080/swagger-ui/#/book-controller
+```
+
+Uma outra opção é você rodar os testes automatizados que já existem nesse projeto. Para rodar os testes unitários:
+
+```
+./gradlew test
+```
+
+Para rodar os testes de integração:
+
+```
+./gradlew integrationTest
+```
+
+Ao rodar o comando acima, um servidor local subirá numa porta randômica. O teste já está preparado para isso. Ao final da execução o servidor é derrubado 
+automaticamente. Nesses testes é utilizado um banco H2 (banco em memória), o banco também é inicializado sozinho e finalizado ao término da execução.
+Por ser um banco em memória, os dados inseridos/alterados na base são perdidos a cada nova execução, sempre iniciando em um estado determinado no arquivo
+`data.sql`.
+
+Não é foco dessa apresentação, mas ainda é possível a execução de testes de mutação com o seguinte comando:
+
+```
+./gradlew pitest
+```
+
+
+
+
+
+
+
+
+Nesse primeiro momento vamos fazer um teste manual.
 Vou utilizar o Postman por ser uma ferramenta bastante conhecida, mas fique a vontade de utilizar outra ferramenta de sua preferência.
 Faremos então um `POST` em `/s3/books`. Precisamos passar dois objetos: um arquivo (imagem) e um json com os dados do livro que 
 iremos cadastrar.
@@ -52,8 +77,7 @@ Após executar a requisição, você deve receber um status `201` e um corpo de 
 }
 ```
 
-Repare no último campo da resposta `imagePath`. Esse campo é preenchido automaticamente pela API com o caminho
-onde a imagem foi salva. Isso quer dizer que nossa imagem foi salva no S3 com sucesso. Se quiser, você pode abrir o console da AWS
+Repare no último campo da resposta `imagePath`. Esse campo é preenchido automaticamente pela API com o caminho onde a imagem foi salva. Isso quer dizer que nossa imagem foi salva no S3 com sucesso. Se quiser, você pode abrir o console da AWS
 e verificar se o arquivo realmente foi salvo na sua conta.
 
 ## <a id="segundaParte">O problema</a>
@@ -65,7 +89,7 @@ Poderíamos agora fazer uma automação para isso e seria algo bem simples, mas 
 * Precisamos ter essa infra sempre em pé. Qualquer manutenção ou alteração no ambiente pode acabar atrapalhando o resultado dos testes;
 * Alguém desavisado, pode fazer alterações em alguma configuração (excluir um bucket, por exemplo) e isso também pode atrapalhar nossos resultados.
 
-E como podemos nos prevenir nisso e ainda ter uma confiança nos nossos testes? Usando o LocalStack.
+E como podemos nos prevenir isso e ainda ter uma confiança nos nossos testes? Usando o LocalStack.
 
 ## O que é o LocalStack?
 
@@ -122,7 +146,7 @@ utilizar um profile `local`. Isso basta para que o Spring entenda que deve utili
 arquivo principal.
 
 ```shell script
- ./gradlew book:bootRun --args='--spring.profiles.active=local' 
+ ./gradlew bootRun --args='--spring.profiles.active=local' 
 ```
 
 Se refizermos agora a mesma requisição anterior quando ainda usamos a configuração de produção, devemos ter um erro. 

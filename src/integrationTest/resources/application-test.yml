@@ -27,4 +27,4 @@ spring:
       bucket: test
 
 external:
-  url: http://localhost:${wiremock.server.port}
+  url: http://localhost

@@ -39,13 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         log.info("Password enconded {}", passwordEncoder.encode("passNormalUser"));
 
         auth.inMemoryAuthentication()
-                .withUser("admin1")
-                .password(passwordEncoder.encode("test"))
-                .roles("ADMIN", "USER")
-                .and()
-                .withUser("user1")
-                .password(passwordEncoder.encode("test"))
-                .roles("USER");
+            .withUser("admin1")
+            .password(passwordEncoder.encode("test"))
+            .roles("ADMIN", "USER")
+            .and()
+            .withUser("user1")
+            .password(passwordEncoder.encode("test"))
+            .roles("USER");
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }
 }

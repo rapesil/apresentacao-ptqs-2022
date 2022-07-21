@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("User Details Service")
+@DisplayName("Testes de Unidade - User Details Service")
 public class UserDetailServiceTest {
 
     @InjectMocks

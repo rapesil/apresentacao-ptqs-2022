@@ -5,6 +5,7 @@ buildscript {
 	dependencies {
 		classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.6.0'
 		classpath 'com.adarshr:gradle-test-logger-plugin:2.1.1'
+		classpath "io.qameta.allure.gradle.report:allure-report-plugin:2.11.2"
 	}
 }
 
@@ -20,13 +21,14 @@ plugins {
 apply plugin: 'jacoco'
 apply plugin: 'info.solidsoft.pitest'
 apply plugin: 'com.adarshr.test-logger'
+apply plugin: "io.qameta.allure-report"
 
 apply from: "$rootDir/gradle/integrationTest.gradle"
 
 group = 'com.peixoto.api'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
-targetCompatibility = '17'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
 	jcenter()
@@ -96,6 +98,9 @@ dependencies {
 	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	implementation 'org.springframework.kafka:spring-kafka:2.8.6'
+
+	testRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
+	integrationTestRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
 
 	compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
@@ -172,4 +177,3 @@ testlogger {
 	showFailedStandardStreams true
 	logLevel 'lifecycle'
 }
-
