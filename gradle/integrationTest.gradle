@@ -1,0 +1,57 @@
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integrationTest/java')
+        }
+        resources.srcDir file('src/integrationTest/resources/')
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestImplementation.extendsFrom testImplementation
+
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.22'
+    integrationTestAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
+
+idea {
+    module {
+        testSourceDirs += sourceSets.integrationTest.java.srcDirs
+        testResourceDirs += sourceSets.integrationTest.resources.srcDirs
+        scopes.TEST.plus += [configurations.integrationTestCompile]
+    }
+}
+
+task integrationTest(type: Test) {
+    group = 'verification'
+
+    useJUnitPlatform {
+        includeTags 'integrationTest'
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    reports.junitXml.enabled = false
+    reports.html.enabled = false
+    outputs.upToDateWhen { false }
+
+    systemProperty "env", System.getProperty("env")
+
+    check.dependsOn it
+    shouldRunAfter test
+}

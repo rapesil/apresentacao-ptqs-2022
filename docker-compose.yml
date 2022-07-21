@@ -1,0 +1,16 @@
+version: "3.1"
+services:
+  db:
+    image: mysql
+    container_name: myapi_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+    - "3306:3306"
+    volumes:
+    - myapi_data:/var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
+
+volumes:
+  myapi_data:

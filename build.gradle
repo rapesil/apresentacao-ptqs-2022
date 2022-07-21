@@ -1,0 +1,175 @@
+buildscript {
+	ext {
+		set('springCloudVersion', "2020.0.2")
+	}
+	dependencies {
+		classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.6.0'
+		classpath 'com.adarshr:gradle-test-logger-plugin:2.1.1'
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.5.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'checkstyle'
+	id 'application'
+	id 'idea'
+}
+
+apply plugin: 'jacoco'
+apply plugin: 'info.solidsoft.pitest'
+apply plugin: 'com.adarshr.test-logger'
+
+apply from: "$rootDir/gradle/integrationTest.gradle"
+
+group = 'com.peixoto.api'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+	jcenter()
+	mavenCentral()
+	maven {
+		url "https://jitpack.io"
+	}
+	google()
+}
+
+def excludeSourceDirs = [
+		'**/config/**',
+		'**/dto/**',
+		'**/swagger/**',
+		'**/exceptions/**',
+		'**/repository/**',
+		'**/handler/**',
+		'**/entities/**',
+		'**/controllers/**',
+		'**/TestingWebApplication*',
+]
+
+jacocoTestReport {
+	dependsOn(integrationTest)
+	reports {
+		html.enabled true
+
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: excludeSourceDirs)
+		}))
+	}
+	getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+}
+
+integrationTest.finalizedBy jacocoTestCoverageVerification
+jacocoTestCoverageVerification {
+	dependsOn(jacocoTestReport)
+	violationRules {
+		rule {
+			limit {
+				minimum = 0
+			}
+		}
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: excludeSourceDirs)
+		}))
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+	implementation 'mysql:mysql-connector-java:8.0.29'
+	implementation 'io.springfox:springfox-swagger2:3.0.0'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'com.amazonaws:aws-java-sdk:1.12.253'
+	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
+	implementation 'org.springframework.kafka:spring-kafka:2.8.6'
+
+	compileOnly 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.projectlombok:lombok:1.18.22'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+
+	testCompile "com.github.tomakehurst:wiremock-jre8:2.30.1"
+	testCompile 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.0'
+
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '5.5.1'
+	testImplementation "com.h2database:h2"
+
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0-RC1'
+
+
+	integrationTestImplementation 'io.rest-assured:rest-assured:4.1.2'
+	integrationTestImplementation 'io.rest-assured:rest-assured-all:4.1.2'
+	integrationTestImplementation "org.testcontainers:junit-jupiter:1.17.3"
+	integrationTestImplementation 'org.testcontainers:testcontainers:1.17.3'
+	integrationTestImplementation "org.testcontainers:localstack:1.17.3"
+	integrationTestImplementation 'org.springframework.kafka:spring-kafka-test:2.7.14'
+	integrationTestImplementation 'org.awaitility:awaitility:4.2.0'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.22'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+pitest {
+	targetClasses = ['com.peixoto.api.service*']
+	threads = 4
+	outputFormats = ['XML', 'HTML']
+	timestampedReports = false
+	junit5PluginVersion = '0.12'
+	testSourceSets.set([sourceSets.test, sourceSets.integrationTest])
+	jvmArgs.set(['-Xmx4096m'])
+}
+
+test {
+	useJUnitPlatform() {
+		excludeTags 'integrationTest'
+	}
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+
+}
+
+tasks.named("processIntegrationTestResources") {
+	duplicatesStrategy = 'include'
+}
+
+testlogger {
+	theme 'mocha'
+	showExceptions true
+	showStackTraces true
+	showFullStackTraces false
+	showCauses true
+	slowThreshold 2000
+	showSummary true
+	showSimpleNames false
+	showPassed true
+	showSkipped true
+	showFailed true
+	showStandardStreams false
+	showPassedStandardStreams true
+	showSkippedStandardStreams true
+	showFailedStandardStreams true
+	logLevel 'lifecycle'
+}
+

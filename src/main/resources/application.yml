@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: on_param
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/book?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic-name: books
+  aws:
+    accessKey: ${AWS_ACCESS_KEY}
+    secretKey: ${AWS_SECRET_KEY}
+    region: "us-east-1"
+    s3:
+        url: https://s3.us-east-1.amazonaws.com/
+        bucket: ${BUCKET_NAME}
+external:
+  url: "http://localhost:8081"
