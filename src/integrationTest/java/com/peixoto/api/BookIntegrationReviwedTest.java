@@ -5,7 +5,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles("test")
 @ContextConfiguration(loader = SpringBootContextLoader.class)
 @DisplayName("Testes de integração - Livros - Após as correções")
-@Disabled
 public class BookIntegrationReviwedTest {
 
     @LocalServerPort
@@ -48,7 +46,9 @@ public class BookIntegrationReviwedTest {
             .when()
             .get("/books/1")
             .then().log().all()
-            .statusCode(200);
+            .statusCode(200)
+            .body("title", Matchers.is("Testes de software"))
+            .body("author", Matchers.is("Rafael Peixoto" ));
     }
 
     @Test

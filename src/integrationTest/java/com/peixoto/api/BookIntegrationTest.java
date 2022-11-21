@@ -3,6 +3,7 @@ package com.peixoto.api;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles("test")
 @ContextConfiguration(loader = SpringBootContextLoader.class)
 @DisplayName("Testes de integração - Livros - Antes de correções")
+@Disabled
 public class BookIntegrationTest {
 
     @LocalServerPort
