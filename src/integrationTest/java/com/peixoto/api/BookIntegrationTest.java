@@ -68,7 +68,7 @@ public class BookIntegrationTest {
         .when()
             .post("/books/")
         .then().log().all()
-            .statusCode(201);
+            .statusCode(200);
     }
 }
 
