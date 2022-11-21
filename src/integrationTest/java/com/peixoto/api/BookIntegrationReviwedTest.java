@@ -5,10 +5,10 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootContextLoader;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -20,16 +20,20 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles("test")
 @ContextConfiguration(loader = SpringBootContextLoader.class)
 @DisplayName("Testes de integração - Livros - Após as correções")
-@Disabled
 public class BookIntegrationReviwedTest {
 
     @LocalServerPort
     private int localPort;
 
+    @Autowired
+    private BookHelpers helper;
+
     @BeforeEach
     void setup() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = localPort;
+
+        helper.deleteByIdIfExists(3L);
     }
 
     @Test

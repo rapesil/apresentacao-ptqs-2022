@@ -51,36 +51,36 @@ def excludeSourceDirs = [
 		'**/TestingWebApplication*',
 ]
 
-jacocoTestReport {
-	dependsOn(integrationTest)
-	reports {
-		html.enabled true
-
-	}
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: excludeSourceDirs)
-		}))
-	}
-	getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
-}
-
-integrationTest.finalizedBy jacocoTestCoverageVerification
-jacocoTestCoverageVerification {
-	dependsOn(jacocoTestReport)
-	violationRules {
-		rule {
-			limit {
-				minimum = 0
-			}
-		}
-	}
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: excludeSourceDirs)
-		}))
-	}
-}
+//jacocoTestReport {
+//	dependsOn(integrationTest)
+//	reports {
+//		html.enabled true
+//
+//	}
+//	afterEvaluate {
+//		classDirectories.setFrom(files(classDirectories.files.collect {
+//			fileTree(dir: it, exclude: excludeSourceDirs)
+//		}))
+//	}
+//	getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+//}
+//
+//integrationTest.finalizedBy jacocoTestCoverageVerification
+//jacocoTestCoverageVerification {
+//	dependsOn(jacocoTestReport)
+//	violationRules {
+//		rule {
+//			limit {
+//				minimum = 0
+//			}
+//		}
+//	}
+//	afterEvaluate {
+//		classDirectories.setFrom(files(classDirectories.files.collect {
+//			fileTree(dir: it, exclude: excludeSourceDirs)
+//		}))
+//	}
+//}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
