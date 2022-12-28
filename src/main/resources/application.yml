@@ -4,6 +4,8 @@ server:
     include-stacktrace: on_param
 
 spring:
+  profiles:
+    active: chaos-monkey
   datasource:
     url: jdbc:mysql://localhost:3306/book?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
@@ -23,3 +25,27 @@ spring:
         bucket: ${BUCKET_NAME}
 external:
   url: "http://localhost:8081"
+
+chaos:
+  monkey:
+    enabled: true
+    watcher:
+      service: true
+      restController: true
+    assaults:
+      level: 1
+      latencyActive: true
+      latencyRangeStart: 2000
+      latencyRangeEnd: 5000
+
+management:
+  endpoint:
+    chaosmonkey:
+      enabled: true
+    chaosmonkeyjmx:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"

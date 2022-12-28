@@ -51,38 +51,44 @@ def excludeSourceDirs = [
 		'**/TestingWebApplication*',
 ]
 
-//jacocoTestReport {
-//	dependsOn(integrationTest)
-//	reports {
-//		html.enabled true
-//
-//	}
-//	afterEvaluate {
-//		classDirectories.setFrom(files(classDirectories.files.collect {
-//			fileTree(dir: it, exclude: excludeSourceDirs)
-//		}))
-//	}
-//	getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
-//}
-//
-//integrationTest.finalizedBy jacocoTestCoverageVerification
-//jacocoTestCoverageVerification {
-//	dependsOn(jacocoTestReport)
-//	violationRules {
-//		rule {
-//			limit {
-//				minimum = 0
-//			}
-//		}
-//	}
-//	afterEvaluate {
-//		classDirectories.setFrom(files(classDirectories.files.collect {
-//			fileTree(dir: it, exclude: excludeSourceDirs)
-//		}))
-//	}
-//}
+jacocoTestReport {
+	dependsOn(integrationTest)
+	reports {
+		html.enabled true
+
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: excludeSourceDirs)
+		}))
+	}
+	getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+}
+
+integrationTest.finalizedBy jacocoTestCoverageVerification
+jacocoTestCoverageVerification {
+	dependsOn(jacocoTestReport)
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.9
+			}
+		}
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: excludeSourceDirs)
+		}))
+	}
+}
 
 dependencies {
+
+	testRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
+	integrationTestRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
+
+//	....
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -98,9 +104,10 @@ dependencies {
 	implementation 'commons-io:commons-io:2.11.0'
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	implementation 'org.springframework.kafka:spring-kafka:2.8.6'
+	implementation 'de.codecentric:chaos-monkey-spring-boot:2.7.0'
 
-	testRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
-	integrationTestRuntimeOnly('io.qameta.allure:allure-junit5:2.14.0')
+
+
 
 	compileOnly 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
