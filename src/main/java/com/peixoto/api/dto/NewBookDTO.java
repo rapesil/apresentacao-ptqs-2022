@@ -1,5 +1,6 @@
 package com.peixoto.api.dto;
 
+import com.peixoto.api.entities.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateBook {
-    @NotNull(message = "ID cannot be null")
-    private long id;
+public class NewBookDTO {
 
     @NotNull(message = "Title cannot be null")
     @NotEmpty(message = "Title cannot be empty")
@@ -24,7 +23,7 @@ public class UpdateBook {
     @NotNull(message = "Author cannot be null")
     private String author;
 
-    private String bookCategory;
+    private Category category;
 
     private String imagePath;
 }

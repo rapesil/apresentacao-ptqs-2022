@@ -1,7 +1,7 @@
 package com.peixoto.api.controllers;
 
-import com.peixoto.api.dto.NewBook;
-import com.peixoto.api.dto.UpdateBook;
+import com.peixoto.api.dto.NewBookDTO;
+import com.peixoto.api.dto.UpdateBookDTO;
 import com.peixoto.api.entities.Book;
 import com.peixoto.api.services.BookService;
 import lombok.RequiredArgsConstructor;
@@ -35,16 +35,16 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<Book>> listAllBooks() {
-        return ResponseEntity.ok(bookService.findAll());
+        return ResponseEntity.ok(bookService.listAllBooks());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> listBookById(@PathVariable long id) {
-        return ResponseEntity.ok(bookService.findById(id));
+        return ResponseEntity.ok(bookService.searchBookById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Book> save(@NotNull @Valid @RequestBody NewBook book)  throws Exception{
+    public ResponseEntity<Book> save(@NotNull @Valid @RequestBody NewBookDTO book)  throws Exception{
         return new ResponseEntity<>(bookService.save(book), HttpStatus.CREATED);
     }
 
@@ -55,7 +55,7 @@ public class BookController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@NotNull @RequestBody UpdateBook book) {
+    public ResponseEntity<Void> update(@NotNull @RequestBody UpdateBookDTO book) {
         bookService.replace(book);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

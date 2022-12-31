@@ -1,6 +1,6 @@
 package com.peixoto.api;
 
-import com.peixoto.api.dto.NewBook;
+import com.peixoto.api.dto.NewBookDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
@@ -68,7 +68,7 @@ public class BookIntegrationReviwedTest {
     @Test
     @DisplayName("Deve inserir um novo livro com sucesso")
     void t3() {
-        final var novoLivro = NewBook.builder()
+        final var novoLivro = NewBookDTO.builder()
             .title("Selenium WebDriver - Descomplicando testes com java")
             .author("Rafael Peixoto")
             .bookCategory("Qualidade de Software")

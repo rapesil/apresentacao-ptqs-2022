@@ -35,7 +35,7 @@ public class BookServiceTest {
         Mockito.when(mockBookRepository.findAll())
                 .thenReturn(Arrays.asList(new Book(), new Book()));
 
-        assertThat(bookService.findAll().size()).isEqualTo(2);
+        assertThat(bookService.listAllBooks().size()).isEqualTo(2);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class BookServiceTest {
         Mockito.when(mockBookRepository.findAll())
             .thenReturn(null);
 
-        assertThatThrownBy(() -> bookService.findAll())
+        assertThatThrownBy(() -> bookService.listAllBooks())
             .isInstanceOf(NullPointerException.class)
             .hasMessage("There is no books");
     }
@@ -52,7 +52,7 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve lançar exceção ao buscar um livro que não existe")
     void findById_shouldThrowBadRequestException() {
-        assertThatThrownBy(() -> bookService.findById(1L))
+        assertThatThrownBy(() -> bookService.searchBookById(1L))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage("Book not found");
     }

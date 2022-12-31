@@ -1,11 +1,12 @@
 package com.peixoto.api.services;
 
-import com.peixoto.api.dto.NewBook;
-import com.peixoto.api.dto.UpdateBook;
+import com.peixoto.api.dto.NewBookDTO;
+import com.peixoto.api.dto.UpdateBookDTO;
 import com.peixoto.api.entities.Book;
 import com.peixoto.api.exceptions.BadRequestException;
 import com.peixoto.api.mapper.BookMapper;
 import com.peixoto.api.repository.BookRepository;
+import com.peixoto.api.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,21 +21,26 @@ public class BookService {
     @Autowired
     private final BookRepository bookRepository;
 
-    public List<Book> findAll() {
+    @Autowired
+    private final CategoryRepository categoryRepository;
+
+    public List<Book> listAllBooks() {
         if(bookRepository.findAll() == null) {
             throw new NullPointerException("There is no books");
         }
         return bookRepository.findAll();
     }
 
-    public Book findById(long id) {
+    public Book searchBookById(long id) {
         return bookRepository.findById(id)
             .orElseThrow(()->new BadRequestException("Book not found"));
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public Book save(NewBook newBook) {
-        var book = BookMapper.INSTANCE.toBook(newBook);
+    public Book save(NewBookDTO newBookDTO) {
+        var book = BookMapper.INSTANCE.toBook(newBookDTO);
+        categoryRepository.findById(book.getCategory().getId())
+                .orElseThrow(() -> new BadRequestException("Category not found"));
 
         return bookRepository.save(book);
     }
@@ -44,11 +50,11 @@ public class BookService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public void replace(UpdateBook book) {
-        Book savedBook = findById(book.getId());
+    public void replace(UpdateBookDTO book) {
+        Book savedBook = searchBookById(book.getId());
 
         savedBook.setTitle(book.getTitle());
-        savedBook.setBookCategory(book.getBookCategory());
+//        savedBook.setBookCategory(book.getBookCategory());
         savedBook.setAuthor(book.getAuthor());
         savedBook.setId(book.getId());
 

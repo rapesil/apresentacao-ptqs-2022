@@ -105,6 +105,8 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.2.Final'
 	implementation 'org.springframework.kafka:spring-kafka:2.8.6'
 	implementation 'de.codecentric:chaos-monkey-spring-boot:2.7.0'
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+
 
 
 
@@ -183,4 +185,8 @@ testlogger {
 	showSkippedStandardStreams true
 	showFailedStandardStreams true
 	logLevel 'lifecycle'
+}
+
+springBoot {
+	mainClassName = 'com.peixoto.api.TestingWebApplication'
 }
