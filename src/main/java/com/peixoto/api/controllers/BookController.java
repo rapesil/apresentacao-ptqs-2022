@@ -45,7 +45,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> save(@NotNull @Valid @RequestBody NewBook book)  throws Exception{
-        return new ResponseEntity<>(bookService.save(book), HttpStatus.CREATED);
+        return new ResponseEntity<>(bookService.save(book), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
