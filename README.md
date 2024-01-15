@@ -1,4 +1,4 @@
-# Melhorando a automação de testes de API Rest na prática
+# Melhorando a automação de testes de API Rest na prática.
 
 Código usado na apresentação da palestra `Melhorando a automação de testes de API Rest na prática` na Conferência de testes de API Rest do Júlio de Lima
 
